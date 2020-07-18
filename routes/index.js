@@ -90,7 +90,7 @@ module.exports = function (app, User, Posting, Feedphoto) {
         var posting = new Posting();
         var post_data = request.body;
         posting.id = post_data.id;
-        posting.place = post_data.password;
+        posting.place = post_data.place;
         posting.date = new Date(post_data.date);
         posting.category = post_data.category;
         posting.save(function (err) {
