@@ -129,8 +129,8 @@ module.exports = function (app, User, Posting, Feedphoto) {
 
 
 
-    app.post('/gallery/posting', function (request, response) {
-        console.log('/gallery/posting');
+    app.post('/gallery/write', function (request, response) {
+        console.log('/gallery/write');
         response.end();
     });
     app.get('/gallery/post_all', function (request, response) {
