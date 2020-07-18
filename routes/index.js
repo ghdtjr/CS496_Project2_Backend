@@ -107,8 +107,8 @@ module.exports = function (app, User, Posting, Feedphoto) {
     /* long click the recycler view send writer information*/
     app.get('/main/:writer_id', function (request, response) {
         console.log('/main/:writer_id');
-        console.log(request.param('id'));
-        User.findOne({ id: request.params.id }, function (err, user) {
+        console.log(request.params.writer_id);
+        User.findOne({ id: request.params.writer_id }, function (err, user) {
             if (err) {
                 return response.status(500).send({ error: 'database failure' });
             }
