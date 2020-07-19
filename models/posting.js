@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var postingSchema = new Schema({
     id: String,
     place: String,
-    date: Date,
+    date: String,
     category: String
 });
 
