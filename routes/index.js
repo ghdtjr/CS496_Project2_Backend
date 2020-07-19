@@ -68,7 +68,6 @@ module.exports = function (app, User, Posting, Feedphoto) {
         return;
     });
 
-
     /* for the request in the main tab */
     /* get the public post infomation */
     app.get('/main/get', function (request, response) {
@@ -126,13 +125,6 @@ module.exports = function (app, User, Posting, Feedphoto) {
 
 
 
-
-
-
-    app.post('/gallery/write', function (request, response) {
-        console.log('/gallery/write');
-        response.end();
-    });
     app.get('/gallery/post_all', function (request, response) {
         console.log('/gallery/post_all');
         response.end();
@@ -142,8 +134,14 @@ module.exports = function (app, User, Posting, Feedphoto) {
         response.end();
     });
 
+
     app.get('/feed/get', function (request, response) {
         console.log('/feed/get');
+        response.end();
+    });
+
+    app.post('/feed/write', function (request, response) {
+        console.log('/feed/write');
         response.end();
     });
 }
