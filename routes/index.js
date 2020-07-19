@@ -95,10 +95,10 @@ module.exports = function (app, User, Posting, Feedphoto) {
         posting.save(function (err) {
             if (err) {
                 console.err(err);
-                response.json({ result: 0 });
+                response.json("0");
                 return;
             }
-            response.json({ result: 1 });
+            response.json("1");
         })
         return;
     });
