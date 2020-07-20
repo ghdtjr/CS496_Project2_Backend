@@ -1,6 +1,8 @@
 /* Router MAIN FILE */
 
 const feedphoto = require("../models/feedphoto");
+var multer = require('multer');
+var upload = multer({ dest: '../CS496_Project2_Backend/uplaod_file' })
 
 module.exports = function (app, User, Posting, Feedphoto) {
 
@@ -28,7 +30,7 @@ module.exports = function (app, User, Posting, Feedphoto) {
                         return;
                     }
                     response.json({ result: 1 });
-                })
+                });
             }
         });
         return;
@@ -140,8 +142,10 @@ module.exports = function (app, User, Posting, Feedphoto) {
         response.end();
     });
 
-    app.post('/feed/write', function (request, response) {
+    app.post('/feed/write', upload.single('file'), function (request, response) {
         console.log('/feed/write');
-        response.end();
+        response.send(request.file);
+        console.log(request.file);
+        return;
     });
 }
