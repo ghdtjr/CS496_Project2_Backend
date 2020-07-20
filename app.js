@@ -38,4 +38,7 @@ db.once('open', function () {
     console.log("Connected to mongod server");
 });
 
-mongoose.connect(mongo_url);
+
+mongoose.set('useUnifiedTopology', true);
+mongoose.connect(mongo_url, { useNewUrlParser: true });
+
