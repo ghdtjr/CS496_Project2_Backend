@@ -1,8 +1,20 @@
 /* Router MAIN FILE */
 
 const feedphoto = require("../models/feedphoto");
+const fs = require('fs');
 var multer = require('multer');
-var upload = multer({ dest: '../CS496_Project2_Backend/uplaod_file' })
+const dir_location = '../CS496_Project2_Backend/upload_file';
+const path = require('path');
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, '../CS496_Project2_Backend/upload_file');
+        },
+        filename: function (req, file, cb) {
+            cb(null, new Date().valueOf() + path.extname(file.originalname));
+        }
+    }),
+});
 
 module.exports = function (app, User, Posting, Feedphoto) {
 
@@ -121,30 +133,61 @@ module.exports = function (app, User, Posting, Feedphoto) {
         return;
     });
 
-
-
-
-
-
-
     app.get('/gallery/post_all', function (request, response) {
         console.log('/gallery/post_all');
-        response.end();
+        fs.readdir(dir_location, (err, files) => {
+            files.forEach(file => {
+                console.log(file);
+            });
+            response.json(files);
+        });
+        return;
     });
+
+    app.get('/gallery/:file_name', function (request, response) {
+        console.log('/gallery/:file_name');
+        try {
+            var filename = request.params.file_name;
+            console.log(filename);
+            const dir_path = path.join(__dirname, "../upload_file/");
+            const filePath = path.join(dir_path, filename);
+            console.log(filePath);
+            fs.access(filePath, fs.constants.F_OK, (err) => {
+                if (err) {
+                    console.error(err);
+                    return response.status(404).json({ msg: "Not Found", error: true });
+                } else {
+                    return response.status(200).sendFile(filePath);
+                }
+            });
+        } catch (error) {
+            console.error(error);
+            return response.status(500).json({ msg: "Internal Error", error: true });
+        }
+        return;
+    });
+
+
+    /*
     app.post('/gallery/post_on_category', function (request, response) {
         console.log('/gallery/post_on_category');
         response.end();
     });
-
-
+ 
+ 
     app.get('/feed/get', function (request, response) {
         console.log('/feed/get');
         response.end();
     });
+    */
 
     app.post('/feed/write', upload.single('file'), function (request, response) {
         console.log('/feed/write');
-        response.send(request.file);
+        if (request.file) {
+            response.send("1");
+        } else {
+            response.send("0");
+        }
         console.log(request.file);
         return;
     });

@@ -2,10 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var feedphotoSchema = new Schema({
-    file_name: String,
+    file_path: String,
     place: String,
     id: String,
-    like: Number,
+    like: String,
     contents: String,
     category: String
 });
