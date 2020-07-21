@@ -6,14 +6,16 @@ var multer = require('multer');
 const dir_location = '../CS496_Project2_Backend/upload_file';
 const profile_location = '../CS496_Project2_Backend/profiles';
 const path = require('path');
-var temp_name;
+var temp_name1;
+var temp_name2;
 const upload = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
             cb(null, dir_location);
         },
         filename: function (req, file, cb) {
-            cb(null, new Date().valueOf() + path.extname(file.originalname));
+            temp_name1 = new Date().valueOf() + path.extname(file.originalname);
+            cb(null, temp_name1);
         }
     }),
 });
@@ -26,8 +28,8 @@ const upload2 = multer({
             cb(null, profile_location);
         },
         filename: function (req, file, cb) {
-            temp_name = new Date().valueOf() + path.extname(file.originalname);
-            cb(null, temp_name);
+            temp_name2 = new Date().valueOf() + path.extname(file.originalname);
+            cb(null, temp_name2);
         }
     }),
 });
@@ -51,7 +53,7 @@ module.exports = function (app, User, Posting, Feedphoto) {
                 user.id = post_data.id;
                 user.password = post_data.password;
                 user.phone_number = post_data.phone_number;
-                user.file_name = temp_name;
+                user.file_name = temp_name2;
                 user.save(function (err) {
                     if (err) {
                         console.err(err);
@@ -239,27 +241,48 @@ module.exports = function (app, User, Posting, Feedphoto) {
         return;
     });
 
-    /*
-    app.post('/gallery/post_on_category', function (request, response) {
-        console.log('/gallery/post_on_category');
-        response.end();
+    // app.post('/gallery/post_on_category', function (request, response) {
+    //     console.log('/gallery/post_on_category');
+    //     response.end();
+    // });
+
+    /* return urls of corresponding writer id */
+    app.get('/feed/get/:writer_id', function (request, response) {
+        console.log('/feed/get:Writer_id');
+        console.log(request.params.writer_id);
+
+        Feedphoto.find(function (err, feedphotos) {
+            if (err) {
+                return res.status(500).send({ error: 'database failure' });
+            }
+            else {
+                return response.json(feedphotos);
+            }
+        });
     });
- 
- 
-    app.get('/feed/get', function (request, response) {
-        console.log('/feed/get');
-        response.end();
-    });
-    */
+
 
     app.post('/feed/write', upload.single('file'), function (request, response) {
         console.log('/feed/write');
-        if (request.file) {
-            response.send("1");
-        } else {
-            response.send("0");
-        }
         console.log(request.file);
+
+        /* Get request's string */
+        var feedphoto = new Feedphoto();
+        var post_data = request.body;
+        feedphoto.place = post_data.place;
+        feedphoto.id = post_data.id;
+        feedphoto.like = post_data.like;
+        feedphoto.contents = post_data.contents;
+        feedphoto.category = post_data.category;
+        feedphoto.file_name = temp_name1;
+        feedphoto.save(function (err) {
+            if (err) {
+                console.err(err);
+                response.json("0");
+                return;
+            }
+            response.json("1");
+        });
         return;
     });
 }
