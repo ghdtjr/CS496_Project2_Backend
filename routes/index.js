@@ -4,11 +4,13 @@ const feedphoto = require("../models/feedphoto");
 const fs = require('fs');
 var multer = require('multer');
 const dir_location = '../CS496_Project2_Backend/upload_file';
+const profile_location = '../CS496_Project2_Backend/profiles';
 const path = require('path');
+var temp_name;
 const upload = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, '../CS496_Project2_Backend/upload_file');
+            cb(null, dir_location);
         },
         filename: function (req, file, cb) {
             cb(null, new Date().valueOf() + path.extname(file.originalname));
@@ -16,15 +18,29 @@ const upload = multer({
     }),
 });
 
+
+/* for profile image uploading */
+const upload2 = multer({
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, profile_location);
+        },
+        filename: function (req, file, cb) {
+            temp_name = new Date().valueOf() + path.extname(file.originalname);
+            cb(null, temp_name);
+        }
+    }),
+});
+
 module.exports = function (app, User, Posting, Feedphoto) {
 
     /* Registration for the first user */
-    app.post('/user/register', function (request, response) {
+    app.post('/user/register', upload2.single('file'), function (request, response) {
         console.log('/user/register');
-
+        console.log(request.file);
         /** Check the input is valid or not
          * Invalid if there is same value in the database already */
-        User.count({ id: request.body.id }, function (err, cnt) {
+        User.countDocuments({ id: request.body.id }, function (err, cnt) {
             if (cnt) {
                 response.json('ID already exists');
                 console.log('ID already exists');
@@ -35,13 +51,14 @@ module.exports = function (app, User, Posting, Feedphoto) {
                 user.id = post_data.id;
                 user.password = post_data.password;
                 user.phone_number = post_data.phone_number;
+                user.file_name = temp_name;
                 user.save(function (err) {
                     if (err) {
                         console.err(err);
-                        response.json({ result: 0 });
+                        response.json("0");
                         return;
                     }
-                    response.json({ result: 1 });
+                    response.json("1");
                 });
             }
         });
@@ -160,6 +177,7 @@ module.exports = function (app, User, Posting, Feedphoto) {
         return;
     });
 
+    /* Get image file correspoding file_name */
     app.get('/gallery/:file_name', function (request, response) {
         console.log('/gallery/:file_name');
         try {

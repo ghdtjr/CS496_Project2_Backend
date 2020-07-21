@@ -5,7 +5,7 @@ var userSchema = new Schema({
     id: String,
     password: String,
     phone_number: String,
-    profile_url: String
+    file_name: String
 });
 
 module.exports = mongoose.model('user', userSchema);
