@@ -182,6 +182,23 @@ module.exports = function (app, User, Posting, Feedphoto) {
         return;
     });
 
+    /* return urls of corresponding writer id */
+    app.get('/main/get/:url_id', function (request, response) {
+        console.log('/main/get/:url_id');
+        console.log(request.params.url_id);
+
+        Feedphoto.findOne({ file_name: request.params.url_id }, function (err, user) {
+            /* unknown error */
+            if (err) {
+                response.end();
+            } else {
+                console.log(user);
+                response.json(user);
+            }
+
+        });
+    });
+
     app.get('/gallery/post_all', function (request, response) {
         console.log('/gallery/post_all');
         fs.readdir(dir_location, (err, files) => {
