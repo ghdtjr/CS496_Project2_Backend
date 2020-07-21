@@ -47,6 +47,22 @@ module.exports = function (app, User, Posting, Feedphoto) {
         });
         return;
     });
+
+    /* Check the new ID is valid or not*/
+    app.get('/user/register/:newID', function (request, response) {
+        console.log('/user/register/:newID');
+        console.log(request.params.newID);
+        User.countDocuments({ id: request.params.newID }, function (err, cnt) {
+            if (!cnt) {
+                /* newID valid */
+                return response.json("1");
+            }
+            /* newID is already exists */
+            return response.json("0");
+        });
+        return;
+    });
+
     /* login for the application use */
     app.post('/user/login', function (request, response) {
         console.log('/user/login');
@@ -54,7 +70,7 @@ module.exports = function (app, User, Posting, Feedphoto) {
         /** Check the input is valid or not
          * Invalid if there is no corresponding document values
          * in the database already */
-        User.count({ id: request.body.id }, function (err, cnt) {
+        User.countDocuments({ id: request.body.id }, function (err, cnt) {
             if (!cnt) {
                 response.json('ID not exists');
                 console.log('ID not exists');
