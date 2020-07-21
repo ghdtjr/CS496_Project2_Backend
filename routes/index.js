@@ -115,6 +115,20 @@ module.exports = function (app, User, Posting, Feedphoto) {
         return;
     });
 
+    app.get('/user/login/get_profile/:ID', function (request, response) {
+        console.log('/user/login/   ');
+        User.findOne({ id: request.params.ID }, function (err, user) {
+            if (err) {
+                return response.status(500).send({ error: 'database failure' });
+            }
+            if (!user) {
+                return response.status(404).json({ error: 'user not found' });
+            }
+            response.json(user.file_name);
+        });
+        return;
+    });
+
     /* for the request in the main tab */
     /* get the public post infomation */
     app.get('/main/get', function (request, response) {
@@ -177,7 +191,7 @@ module.exports = function (app, User, Posting, Feedphoto) {
         return;
     });
 
-    /* Get image file correspoding file_name */
+    /* Get image file correspoding file_name in upload_file */
     app.get('/gallery/:file_name', function (request, response) {
         console.log('/gallery/:file_name');
         try {
@@ -201,6 +215,29 @@ module.exports = function (app, User, Posting, Feedphoto) {
         return;
     });
 
+    /* Get image file correspoding file_name in profiles */
+    app.get('/profile/:file_name', function (request, response) {
+        console.log('/profile/:file_name');
+        try {
+            var filename = request.params.file_name;
+            console.log(filename);
+            const dir_path = path.join(__dirname, "../profiles/");
+            const filePath = path.join(dir_path, filename);
+            console.log(filePath);
+            fs.access(filePath, fs.constants.F_OK, (err) => {
+                if (err) {
+                    console.error(err);
+                    return response.status(404).json({ msg: "Not Found", error: true });
+                } else {
+                    return response.status(200).sendFile(filePath);
+                }
+            });
+        } catch (error) {
+            console.error(error);
+            return response.status(500).json({ msg: "Internal Error", error: true });
+        }
+        return;
+    });
 
     /*
     app.post('/gallery/post_on_category', function (request, response) {
