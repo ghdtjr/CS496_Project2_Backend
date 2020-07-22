@@ -265,10 +265,10 @@ module.exports = function (app, User, Posting, Feedphoto) {
 
     /* return urls of corresponding writer id */
     app.get('/feed/get/:writer_id', function (request, response) {
-        console.log('/feed/get:Writer_id');
+        console.log('/feed/get:writer_id');
         console.log(request.params.writer_id);
 
-        Feedphoto.find(function (err, feedphotos) {
+        Feedphoto.find({ id: request.params.writer_id }, function (err, feedphotos) {
             if (err) {
                 return res.status(500).send({ error: 'database failure' });
             }
